@@ -1,0 +1,35 @@
+sudo: false
+dist: trusty
+language: node_js
+node_js:
+- '6'
+env:
+  matrix:
+  - SAUCE=true
+addons:
+  chrome: stable
+  firefox: latest
+  apt:
+    packages:
+    - python3-pip
+script:
+- npm test
+- npm run cover
+- npm run browser-test
+- npm run lint
+after_sucess:
+- ci/coveralls.sh
+git:
+  depth: 1
+  submodules: false
+cache:
+  directories:
+  - node_modules
+before_deploy:
+- ci/build.sh
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: ci/travis_deploy.sh
+  on:
+    branch: master
